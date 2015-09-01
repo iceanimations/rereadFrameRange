@@ -7,6 +7,7 @@ from PyQt4.QtGui import QApplication, QMessageBox
 import nuke
 import msgBox
 import os
+import appUsageApp
 
 title = 'Reread Frame Range'
 parent = QApplication.activeWindow()
@@ -47,3 +48,4 @@ def read():
                     if last is not None:
                         node.knob('last').setValue(last)
                         node.knob('origlast').setValue(last)
+    appUsageApp.updateDatabase('rereadFrameRange')
