@@ -3,28 +3,34 @@ Created on Sep 1, 2015
 
 @author: qurban.ali
 '''
-from PyQt4.QtGui import QApplication, QMessageBox
-import nuke
-import msgBox
 import os
-import appUsageApp
+
+import nuke
+
+from Qt.QtWidgets import QApplication, QMessageBox
+from utilities import msgBox, appUsageApp
 
 title = 'Reread Frame Range'
 parent = QApplication.activeWindow()
 
+
 def showMessage(**kwargs):
     msgBox.showMessage(parent, title, **kwargs)
-    
+
+
 def getFrameRange(files):
     frames = []
     minFrame = maxFrame = None
     for phile in files:
         parts = phile.split('.')
-        if len(parts) == 3: frames.append(parts[1])
+        if len(parts) == 3:
+            frames.append(parts[1])
     if frames:
         frames = [int(frame) for frame in frames]
-        minFrame = min(frames); maxFrame = max(frames)
+        minFrame = min(frames)
+        maxFrame = max(frames)
     return [minFrame, maxFrame]
+
 
 def read():
     nodes = nuke.selectedNodes('Read')
@@ -32,14 +38,15 @@ def read():
         showMessage(msg='No Read node found in the selection',
                     icon=QMessageBox.Information)
         return
-    
+
     for node in nodes:
         filename = node.knob('file').getValue()
         if filename:
             filename = os.path.dirname(filename)
             if os.path.exists(filename):
                 files = os.listdir(filename)
-                files = [phile for phile in files if os.path.isfile(os.path.join(filename, phile))]
+                files = [phile for phile in files
+                         if os.path.isfile(os.path.join(filename, phile))]
                 if files:
                     first, last = getFrameRange(files)
                     if first is not None:
